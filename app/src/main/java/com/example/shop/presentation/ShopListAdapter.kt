@@ -1,32 +1,25 @@
-package com.example.shop.domain
+package com.example.shop.presentation
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.ListAdapter
 import com.example.shop.R
+import com.example.shop.domain.ShopItem
 
 
-class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
+class ShopListAdapter :
+    ListAdapter<ShopItem, ShopItemViewHolder.ShopItemViewHolder>(ShopItemDiff()) {
 
-    var shopList = listOf<ShopItem>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
     var onShopItemShortClickListener: ((ShopItem) -> Unit)? = null
 
-
-
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ShopItemViewHolder.ShopItemViewHolder {
         return when (viewType) {
             ACTIVE -> {
-                ShopItemViewHolder(
+                ShopItemViewHolder.ShopItemViewHolder(
                     LayoutInflater.from(parent.context).inflate(
                         R.layout.item_shop_enabled,
                         parent,
@@ -35,7 +28,7 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
                 )
             }
             NOT_ACTIVE -> {
-                ShopItemViewHolder(
+                ShopItemViewHolder.ShopItemViewHolder(
                     LayoutInflater.from(parent.context).inflate(
                         R.layout.item_shop_disabled,
                         parent,
@@ -47,8 +40,8 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         }
     }
 
-    override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
-        val shopItem = shopList[position]
+    override fun onBindViewHolder(holder: ShopItemViewHolder.ShopItemViewHolder, position: Int) {
+        val shopItem = getItem(position)
         holder.name.text = shopItem.name
         holder.count.text = shopItem.count.toString()
         holder.view.setOnLongClickListener {
@@ -57,47 +50,19 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         }
         holder.view.setOnClickListener {
             onShopItemShortClickListener?.invoke(shopItem)
-
         }
-
-
-    }
-
-    override fun onViewRecycled(holder: ShopItemViewHolder) {
-        super.onViewRecycled(holder)
-        R.layout.item_shop_disabled
-    }
-
-
-    override fun getItemCount(): Int {
-        return shopList.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (shopList[position].enabled) {
+        return when (getItem(position).enabled) {
             true -> ACTIVE
             false -> NOT_ACTIVE
         }
-
-//        if (shopList[position].enabled){
-//            return ACTIVE
-//        } else if (shopList[position].enabled) {
-//            return NOT_ACTIVE
-//        } else {
-//
-//        }
-    }
-
-    class ShopItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val name: TextView = view.findViewById(R.id.name)
-        val count: TextView = view.findViewById(R.id.count)
-
     }
 
     companion object {
         const val ACTIVE = 101
         const val NOT_ACTIVE = 100
-
         const val MAX_POOL_SIZE = 15
     }
 }
