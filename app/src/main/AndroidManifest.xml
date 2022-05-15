@@ -8,6 +8,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Shop">
+        <activity android:name=".presentation.UserActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true">
