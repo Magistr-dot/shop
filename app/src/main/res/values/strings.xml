@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">shop</string>
+    <string name="error_count">wrong count</string>
     <string name="add_new_shop_item">Add new shop item</string>
 </resources>
