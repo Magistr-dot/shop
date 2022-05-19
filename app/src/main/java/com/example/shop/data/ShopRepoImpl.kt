@@ -12,7 +12,6 @@ object ShopRepoImpl : ShopListRepo {
     private var autoID = 0
     private var shopListLD = MutableLiveData<List<ShopItem>>()
 
-
     init {
         for (i in 0 until 100) {
             val item = ShopItem("Name $i", i, Random.nextBoolean())

@@ -58,7 +58,6 @@ class ShopItemViewModel : ViewModel() {
                 finishWork()
             }
         }
-
     }
 
     private fun parseName(inputName: String?): String {
