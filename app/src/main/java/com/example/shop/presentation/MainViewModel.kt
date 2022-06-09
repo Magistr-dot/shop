@@ -1,29 +1,43 @@
 package com.example.shop.presentation
 
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.shop.data.ShopRepoImpl
 import com.example.shop.domain.DeleteShopItem
 import com.example.shop.domain.EditShopItem
 import com.example.shop.domain.GetShopList
 import com.example.shop.domain.ShopItem
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = ShopRepoImpl
+    private val repository = ShopRepoImpl(application)
 
     private val getShopListUseCase = GetShopList(repository)
     private val deleteShopListUseCase = DeleteShopItem(repository)
     private val editShopListUseCase = EditShopItem(repository)
 
+
     val shopList = getShopListUseCase.getShopList()
 
     fun deleteShopList(item: ShopItem) {
-        deleteShopListUseCase.deleteShopItem(item)
+        viewModelScope.launch {
+            deleteShopListUseCase.deleteShopItem(item)
+        }
     }
 
     fun editShopList(item: ShopItem) {
-        val new = item.copy(enabled = !item.enabled)
-        editShopListUseCase.editShopItem(new)
+        viewModelScope.launch {
+            val new = item.copy(enabled = !item.enabled)
+            editShopListUseCase.editShopItem(new)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
     }
 }
